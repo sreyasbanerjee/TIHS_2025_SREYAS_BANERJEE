@@ -1,7 +1,3 @@
-# TIHS_2025_SREYAS_BANERJEE
-'''
-TIHS ISI Autumn Internship 2025 project repo
-'''
 IMAGEDATA AUGMENTATION AND IMAGE CLASSIFICATION
 
 
@@ -60,7 +56,15 @@ plt.show()
 
 ANS :
 
-.......
+Method 1 : 
+The image is being imported a an image object(PIL)
+org=Image.open("Test_img1.jpg")
+and all the subsequent transformations are performed on the image object itself 
+
+Method 2 : here the image is opened with OpenCV 
+org=cv2.imread("Test_img1.jpg")
+the image is stored in org as a tuple with shape (height,weight,channel) and the imported inage is in BGR(blue green red) format during grayscale the BGR is converted to grayscale rather than from RGB to grayscale. Hence, we get two different pictures.
+In the above code for method 2 the image is forcefully being converted to RGB.
 
 QUESTION 2 :
 
@@ -146,21 +150,21 @@ class dataloader:
     if (self.curr_index >= len(self.indices)):
       raise StopIteration
 
-  #to not exceed the dataset limit
+   #to not exceed the dataset limit
     end_index=min(self.curr_index+self.batch_size,len(self.indices))
     batch_index=self.indices[self.curr_index:end_index]
 
-   batch=[]
+  batch=[]
     for i in batch_index:
       batch.append(self.dataset[i])
 
-  #seperating images and labels
+   #seperating images and labels
     images,label=zip(*batch)
     image_tensor=torch.stack(images)
     label_tensor=torch.tensor(label)
 
   self.curr_index=end_index
-    return image_tensor,label_tensor
+  return image_tensor,label_tensor
 
 data_dir = 'Cat_Dog_data/train'
 
@@ -234,69 +238,70 @@ import cv2
 import matplotlib.pyplot as plt
 
 class MNISTClassifier:
-      def __init__(self):
-              self.model: tf.keras.Model | None = None
+    def __init__(self):
+        self.model: tf.keras.Model | None = None
 
-Loading Data
+  def load_data(self):
+        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+        x_train = (x_train.astype("float32") / 255.0)[..., np.newaxis]
+        x_test  = (x_test.astype("float32") / 255.0)[..., np.newaxis]
+        return (x_train, y_train), (x_test, y_test)
 
-def load_data(self):
-      (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
-      x_train = (x_train.astype("float32") / 255.0)[..., np.newxis]
-      x_test  = (x_test.astype("float32") / 255.0)[..., np.newaxis]
-      return (x_train, y_train), (x_test, y_test)
+   def build_model(self):
+        self.model = tf.keras.Sequential([
+                tf.keras.layers.Conv2D(32, (3,3), activation="relu", input_shape=(28,28,1)),
+                tf.keras.layers.MaxPooling2D((2,2)),
+                tf.keras.layers.Conv2D(64, (3,3), activation="relu"),
+                tf.keras.layers.MaxPooling2D((2,2)),
+                tf.keras.layers.Flatten(),
+                tf.keras.layers.Dense(128, activation="relu"),
+                tf.keras.layers.Dense(10, activation="softmax"),
+                ])
+        self.model.compile(optimizer="adam",
+                                   loss="sparse_categorical_crossentropy",
+                                   metrics=["accuracy"])
 
-CNN Module
+  def train(self, x_train, y_train, epochs=5, batch_size=64):
+        self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=2)
 
-def build_model(self):
-      self.model = tf.keras.Sequential([
-      tf.keras.layers.Conv2D(32, (3,3), activation="relu", input_shape=(28,28,1)),
-              tf.keras.layers.MaxPooling2D((2,2)),
-              tf.keras.layers.Conv2D(64, (3,3), activation="relu"),
-              tf.keras.layers.MaxPooling2D((2,2)),
-              tf.keras.layers.Flatten(),
-              tf.keras.layers.Dense(128, activation="relu"),
-              tf.keras.layers.Dense(10, activation="softmax"),
-              ])
-      self.model.compile(optimizer="adam",
-                                 loss="sparse_categorical_crossentropy",
-                                 metrics=["accuracy"])
+   def evaluate(self, x_test, y_test):
+        loss, acc = self.model.evaluate(x_test, y_test, verbose=0)
+        print(f"Test Accuracy: {acc:.4f},Test Loss :{loss:.4f}")
+        return acc
 
-Training
+  def predict_with_open_cv(self,x_test,y_test,num_samples=3,out_dir="mnist_opencv_samples",display=False):
+        os.makedirs(out_dir,exist_ok=True)
+        for i in range(num_samples):
+            digit=(x_test[i]*255).astype("uint8").squeeze(axis=-1)
+            label=int(y_test[i])
+            filename=os.path.join(out_dir,f"digit_{i}_label_{label}.png")
+            cv2.imwrite(filename,digit)
 
-def train(self, x_train, y_train, epochs=5, batch_size=64):
-      self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=2)
+  img=cv2.imread(filename,cv2.IMREAD_GRAYSCALE)
+            img=cv2.resize(img,(28,28))
+            img=img.astype("float32")/255.0
+            img=np.expand_dims(img,axis=(0,-1))
 
-Evaluation
-
-def evaluate(self, x_test, y_test):
-      loss, acc = self.model.evaluate(x_test, y_test, verbose=0)
-      print(f"Test Accuracy: {acc:.4f},Test Loss :{loss:.4f}")
-      return acc
-
-Island
-
-def predict_with_open_cv(self,x_test,y_test,num_samples=3,out_dir="mnist_opencv_samples",display=False):
-  os.makedirs(out_dir,exist_ok=True)
-  for i in range(num_samples):
-    digit=(x_test[i]*255).astype("uint8").squeeze(axis=-1)
-    label=int(y_test[i])
-    filename=os.path.join(out_dir,f"digit_{i}_label_{label}.png")
-    cv2.imwrite(filename,digit)
-
-img=cv2.imread(file,cv2.IMREAD_GRAYSCALE)
-    img=cv2.resize(ing,(28,28))
-    img=img.astype("float32")/255.0
-    img=np.expand_dims(img,axis=(0,-1))
-
-probs=self.model.predict(img,verbose=0)
-    pred_class=int(np.argmax(probs,axis=-1)[0])
-    print(f"Sample{i}:True={label}|Pred={pred_class}")
+  probs=self.model.predict(img,verbose=0)
+            pred_class=int(np.argmax(probs,axis=-1)[0])
+            print(f"Sample{i}:True={label}|Pred={pred_class}")
 
   if display:
-      try:
-        cv2.imshow("digit",(img[0,...,0]*255)).astype("uint8")
-        cv2.waitKey(500)
-        cv2.destroyAllWindows()
-      except cv2.error:
-        print("GUI not available ")
-        
+    try:
+                      cv2.imshow("digit",(img[0,...,0]*255)).astype("uint8")
+                    cv2.waitKey(500)
+                    cv2.destroyAllWindows()
+                except cv2.error:
+                    print("GUI not available ")
+
+Execution
+
+if __name__ == "__main__":
+      EPOCHS = 5
+      BATCH_SIZE = 64
+      clf = run_step(1, "Instantiate classifier", MNISTClassifier)
+      (x_train,y_train), (x_test,y_test) = run_step(2, "Load MNIST", clf.load_data)
+      run_step(3, "Build model", clf.build_model)
+      run_step(4, "Train", clf.train, x_train, y_train, EPOCHS, BATCH_SIZE)
+      run_step(5, "Evaluate", clf.evaluate, x_test, y_test)
+      run_step(6, "Predict with OpenCV", clf.predict_with_open_cv, x_test, y_test, 3)
