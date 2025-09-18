@@ -33,9 +33,7 @@ ax[1].set_title("Grayscale")
 fig.tight_layout()
 plt.show()
 
-island
-
-# Method 2: Reading a color image an converting to grayscale image
+# Method 2: Reading a color image an converting to grayscale image (using opencv)
 
 import cv2
 original = cv2.imread('Test_img1.jpg')
@@ -54,6 +52,7 @@ ax[1].set_title("Grayscale")
 fig.tight_layout()
 plt.show()
 
+'''
 ANS :
 
 Method 1 : 
@@ -65,13 +64,16 @@ Method 2 : here the image is opened with OpenCV
 org=cv2.imread("Test_img1.jpg")
 the image is stored in org as a tuple with shape (height,weight,channel) and the imported inage is in BGR(blue green red) format during grayscale the BGR is converted to grayscale rather than from RGB to grayscale. Hence, we get two different pictures.
 In the above code for method 2 the image is forcefully being converted to RGB.
+'''
 
+'''
 QUESTION 2 :
 
 Implement the following types of image transformation with OpenCV functions:
 
 1. Image resize
 2. Image rotation
+'''
 
 
 '''
@@ -95,7 +97,7 @@ axes[0].imshow(cv2.cvtColor(rr,cv2.COLOR_BGR2RGB))
 axes[1].imshow(cv2.cvtColor(sr,cv2.COLOR_BGR2RGB))
 plt.show()
 
-Pre requisite for qns 3
+#Pre requisite for qns 3
 
 # Downlaod the cat and dog dataset
 !wget https://s3.amazonaws.com/content.udacity-data.com/nd089/Cat_Dog_data.zip
@@ -103,11 +105,13 @@ Pre requisite for qns 3
 # unzip the dataset
 !unzip Cat_Dog_data.zip
 
+'''
 QUESTION 3 :
 
 Load images from the Cat_Dog_data/train folder, define a few additional transforms, then build the dataloader.
 
-Transforms
+'''
+#Transforms
 
 data_dir='Cat_Dog_data/train'
 transform=transforms.Compose([transforms.RandomHorizontalFlip(p=1.0),
@@ -125,7 +129,7 @@ img=images[0].numpy().transpose((1,2,0))
 plt.imshow(img)
 plt.show()
 
-BUILDING THE DATALOADER
+#BUILDING THE DATALOADER
 
 class dataloader:
   def __init__(self,dataset,batch_size=1,shuffle=True):
@@ -182,7 +186,7 @@ img = images[0].numpy().transpose((1, 2, 0))
 plt.imshow(img, cmap='gray')
 plt.show()
 
-Pre requisite for question 4
+#Pre requisite for question 4
 
 ''' Finding mean amd standard deviation of MNIST dataset  '''
 
@@ -225,11 +229,11 @@ for i in range(n):
 
 plt.show()
 
-
-
+'''
 QUESTION 5 :
 
 MNIST Classification using OOPS by Tensorflow Keras
+'''
 
 import os
 import numpy as np
@@ -294,7 +298,7 @@ class MNISTClassifier:
                 except cv2.error:
                     print("GUI not available ")
 
-Execution
+#Execution
 
 if __name__ == "__main__":
       EPOCHS = 5
