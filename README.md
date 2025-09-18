@@ -298,6 +298,12 @@ class MNISTClassifier:
                 except cv2.error:
                     print("GUI not available ")
 
+  def run_step(step_no, title, func, *args, **kwargs):
+    print(f"\n[Step {step_no}] {title}")
+    result = func(*args, **kwargs)
+    print(f"[Step {step_no}] Completed.")
+    return result
+
 #Execution
 
 if __name__ == "__main__":
