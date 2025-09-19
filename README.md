@@ -1,9 +1,11 @@
+'''
 IMAGEDATA AUGMENTATION AND IMAGE CLASSIFICATION
 
 
 QUESTION 1 :
 
 Why do you think the color images displayed above look different (that is, Method 1 vs Method 2)?
+'''
 
 import numpy as np
 import matplotlib.pyplot as plt
